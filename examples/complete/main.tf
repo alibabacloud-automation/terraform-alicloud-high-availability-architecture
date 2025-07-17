@@ -78,6 +78,7 @@ resource "alicloud_ecs_command" "prepare_data" {
 resource "alicloud_ecs_invocation" "invoke_script" {
   instance_id = [module.complete.ecs_instance_ids[0]]
   command_id  = alicloud_ecs_command.prepare_data.id
+  depends_on  = [module.complete]
 }
 
 
