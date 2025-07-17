@@ -37,3 +37,14 @@ output "rds_instance_id" {
   description = "The ID of the RDS Instance"
   value       = module.complete.rds_instance_id
 }
+
+output "rds_instance_connection_string" {
+  description = "The connection string of the RDS Instance"
+  value       = module.complete.rds_instance_connection_string
+}
+
+
+output "WebUrl" {
+  description = "The Addresses of Web."
+  value       = format("http://%s", module.complete.alb_dns_name)
+}

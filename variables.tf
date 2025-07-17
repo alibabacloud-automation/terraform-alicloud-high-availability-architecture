@@ -27,7 +27,6 @@ variable "vswitches_config" {
 }
 
 
-
 variable "alb_load_balancer_config" {
   description = "The parameters used to create alb load balancer."
   type = object({
@@ -37,7 +36,36 @@ variable "alb_load_balancer_config" {
     load_balancer_edition  = optional(string, "Basic")
   })
   default = {}
+}
 
+variable "alb_server_group" {
+  description = "The parameters of alb server group."
+  type = object({
+    server_group_name = string
+    scheduler         = optional(string, "Wrr")
+    protocol          = optional(string, "HTTP")
+    sticky_session_config = optional(object({
+      sticky_session_enabled = optional(bool, null)
+      cookie                 = optional(string, null)
+      sticky_session_type    = optional(string, null)
+    }), {})
+    health_check_config = optional(object({
+      health_check_enabled      = optional(bool, true)
+      health_check_connect_port = optional(number, 80)
+      health_check_codes        = optional(list(string), ["http_2xx", "http_3xx", "http_4xx"])
+      health_check_http_version = optional(string, "HTTP1.1")
+      health_check_interval     = optional(number, 2)
+      health_check_method       = optional(string, "HEAD")
+      health_check_path         = optional(string, "/")
+      health_check_protocol     = optional(string, "HTTP")
+      health_check_timeout      = optional(number, 5)
+      healthy_threshold         = optional(number, 3)
+      unhealthy_threshold       = optional(number, 3)
+    }), {})
+  })
+  default = {
+    server_group_name = "server-group"
+  }
 }
 
 variable "security_group_name" {
@@ -66,6 +94,7 @@ variable "ecs_config" {
 variable "rds_config" {
   description = "The parameters of rds."
   type = object({
+    # instance
     engine                   = optional(string, "MySQL")
     engine_version           = optional(string, "8.0")
     instance_type            = optional(string, "mysql.x2.medium.2c")
@@ -74,11 +103,13 @@ variable "rds_config" {
     monitoring_period        = optional(string, "60")
     db_instance_storage_type = optional(string, "cloud_essd")
     instance_name            = optional(string, null)
-
+    # account
     account_name     = string
     account_password = string
-
+    account_type     = optional(string, null)
+    # database
     database_name = string
+    character_set = optional(string, null)
   })
 }
 
