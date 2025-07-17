@@ -31,7 +31,7 @@ resource "alicloud_vswitch" "rds" {
   vswitch_name = "rds-vsw-${each.key}"
 }
 
-# ALB Load Balancer
+# ALB
 resource "alicloud_alb_load_balancer" "default" {
   vpc_id                 = alicloud_vpc.default.id
   address_type           = var.alb_load_balancer_config.address_type
@@ -47,6 +47,64 @@ resource "alicloud_alb_load_balancer" "default" {
     pay_type = var.alb_load_balancer_config.pay_type
   }
   load_balancer_edition = var.alb_load_balancer_config.load_balancer_edition
+}
+
+resource "alicloud_alb_server_group" "default" {
+  # server_group_type = "Ip"
+  vpc_id            = alicloud_vpc.default.id
+  server_group_name = var.alb_server_group.server_group_name
+  scheduler         = var.alb_server_group.scheduler
+  protocol          = var.alb_server_group.protocol
+
+  health_check_config {
+    health_check_connect_port = var.alb_server_group.health_check_config.health_check_connect_port
+    health_check_enabled      = var.alb_server_group.health_check_config.health_check_enabled
+    health_check_codes        = var.alb_server_group.health_check_config.health_check_codes
+    health_check_http_version = var.alb_server_group.health_check_config.health_check_http_version
+    health_check_interval     = var.alb_server_group.health_check_config.health_check_interval
+    health_check_method       = var.alb_server_group.health_check_config.health_check_method
+    health_check_path         = var.alb_server_group.health_check_config.health_check_path
+    health_check_protocol     = var.alb_server_group.health_check_config.health_check_protocol
+    health_check_timeout      = var.alb_server_group.health_check_config.health_check_timeout
+    healthy_threshold         = var.alb_server_group.health_check_config.healthy_threshold
+    unhealthy_threshold       = var.alb_server_group.health_check_config.unhealthy_threshold
+  }
+
+  dynamic "sticky_session_config" {
+    for_each = [var.alb_server_group.sticky_session_config]
+    content {
+      sticky_session_enabled = sticky_session_config.value.sticky_session_enabled
+      cookie                 = sticky_session_config.value.cookie
+      sticky_session_type    = sticky_session_config.value.sticky_session_type
+    }
+  }
+
+  dynamic "servers" {
+    for_each = alicloud_instance.default
+    content {
+      server_type       = "Ecs"
+      port              = 80
+      server_id         = servers.value.id
+      server_ip         = servers.value.primary_ip_address
+      weight            = 100
+      remote_ip_enabled = false
+    }
+  }
+}
+
+resource "alicloud_alb_listener" "default" {
+  listener_protocol = "HTTP"
+  listener_port     = 80
+  load_balancer_id  = alicloud_alb_load_balancer.default.id
+
+  default_actions {
+    type = "ForwardGroup"
+    forward_group_config {
+      server_group_tuples {
+        server_group_id = alicloud_alb_server_group.default.id
+      }
+    }
+  }
 }
 
 
@@ -118,9 +176,11 @@ resource "alicloud_rds_account" "default" {
   db_instance_id   = alicloud_db_instance.default.id
   account_name     = var.rds_config.account_name
   account_password = var.rds_config.account_password
+  account_type     = var.rds_config.account_type
 }
 
 resource "alicloud_db_database" "default" {
-  instance_id = alicloud_db_instance.default.id
-  name        = var.rds_config.database_name
+  instance_id   = alicloud_db_instance.default.id
+  name          = var.rds_config.database_name
+  character_set = var.rds_config.character_set
 }
