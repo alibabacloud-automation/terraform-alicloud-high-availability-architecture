@@ -22,7 +22,9 @@ Note that this example may create resources which cost money. Run `terraform des
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_alicloud"></a> [alicloud](#provider\_alicloud) | n/a |
 
 ## Modules
 
@@ -34,10 +36,10 @@ No providers.
 
 | Name | Type |
 |------|------|
-| [alicloud_ecs_command.install_app](https://registry.terraform.io/providers/hashicorp/alicloud/latest/docs/resources/ecs_command) | resource |
-| [alicloud_ecs_command.prepare_data](https://registry.terraform.io/providers/hashicorp/alicloud/latest/docs/resources/ecs_command) | resource |
-| [alicloud_ecs_invocation.invoke_app](https://registry.terraform.io/providers/hashicorp/alicloud/latest/docs/resources/ecs_invocation) | resource |
-| [alicloud_ecs_invocation.invoke_script](https://registry.terraform.io/providers/hashicorp/alicloud/latest/docs/resources/ecs_invocation) | resource |
+| [alicloud_ecs_command.install_app](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/ecs_command) | resource |
+| [alicloud_ecs_command.prepare_data](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/ecs_command) | resource |
+| [alicloud_ecs_invocation.invoke_app](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/ecs_invocation) | resource |
+| [alicloud_ecs_invocation.invoke_script](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/ecs_invocation) | resource |
 
 ## Inputs
 
