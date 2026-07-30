@@ -8,6 +8,8 @@ module "complete" {
     cidr_block = "192.168.0.0/16"
   }
 
+  security_group_rule_cidr_ip = "192.168.0.0/16"
+
   zone_ids = ["cn-beijing-l", "cn-beijing-f"]
 
   vswitches_config = {
