@@ -74,6 +74,12 @@ variable "security_group_name" {
   default     = null
 }
 
+variable "security_group_rule_cidr_ip" {
+  description = "The CIDR block allowed by the HTTP and HTTPS security group rules."
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
 variable "ecs_config" {
   description = "The parameters of instance."
   type = object({
