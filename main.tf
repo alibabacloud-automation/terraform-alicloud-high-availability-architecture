@@ -122,7 +122,7 @@ resource "alicloud_security_group_rule" "sg_rule_http" {
   port_range        = "80/80"
   priority          = 1
   security_group_id = alicloud_security_group.default.id
-  cidr_ip           = "0.0.0.0/0"
+  cidr_ip           = var.security_group_rule_cidr_ip
 }
 
 resource "alicloud_security_group_rule" "sg_rule_https" {
@@ -133,7 +133,7 @@ resource "alicloud_security_group_rule" "sg_rule_https" {
   port_range        = "443/443"
   priority          = 1
   security_group_id = alicloud_security_group.default.id
-  cidr_ip           = "0.0.0.0/0"
+  cidr_ip           = var.security_group_rule_cidr_ip
 }
 
 
